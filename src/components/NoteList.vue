@@ -1,67 +1,111 @@
 <template>
-  <div id="notes-list">
-      <div id="list-header">
-          <h2>笔记</h2>
-          <!--role h5标签语义化-->
-          <div class="btn-group btn-group-justified" role="group">
-              <!--所有的笔记-->
-              <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-default"
-                  @click="show = 'all'" :class="{active: show == 'all'}">
-                      所有笔记
-                  </button>
-              </div>
-              <!--收藏的笔记-->
-               <div class="btn-group" role="group">
-                   <button type="button" class="btn btn-default"
-                   @click="show ='favorites'" :class="{active: show =='favorites'}">
-                   收藏的笔记
-                   </button>
-               </div>
+  <div class="notes-list">
+      <div class="btn-group btn-group-justified" role="group">
+          <!--所有的按钮-->
+          <div class="btn-group">
+              <button type="button"
+              class="btn btn-default"
+              @click="toggleType('all')"
+              :class="{active: show =='all'}">
+                  所有笔记
+              </button>
+          </div>
+          <!--收藏的按钮-->
+          <div class="btn-group">
+              <button type="button"
+              class="btn btn-default"
+              @click="toggleType('favorite')"
+              :class="{active: show =='favorite'}">
+                  收藏的笔记
+              </button>
           </div>
       </div>
+      <!--笔记列表-->
       <div class="container">
-          <div class="list-group">
-              <a v-for="note in filteredNotes" :key="note"
-              class="list-group-item" href="#" 
-              :class="{active:activeNote == note}"
-              @click="updateActiveNote(note)">
-                <h4 class="list-group-item-heading">
-                    {{note.text.trim().substring(0,30)}}
-                </h4>
-              </a>
+        <div class="list-group">
+          <div v-for="(note,index) in filterNotes" :key="index"
+          class="list-group-item"
+          :class="{active:activeNote == note}"
+          @click="updateActiveNote(note)"
+          >
+          {{note.title}}
           </div>
+        </div>
       </div>
   </div>
 </template>
+<style>
 
+</style>
 <script>
-
-import {updateActiveNote} from '../vuex/actions'
+import {mapState,mapActions,mapGetters} from 'vuex'
 export default {
+  name:'NoteList',
   data(){
-      return {
-          show:'all'
-      }
+    return {}
   },
-  vuex:{
-      getters:{
-          notes:state => state.notes,
-          activeNote:state => state.activeNote
+  methods:{
+      ...mapActions([
+        'toggleListShow',
+        'switchNote'
+      ]),
+      toggleType(type){
+        this.toggleListShow(type);
       },
-      actions:{
-          updateActiveNote
+      updateActiveNote(note){
+        this.switchNote(note);
       }
   },
   computed:{
-      filteredNotes(){
-          if(this.show == 'all'){
-              return this.notes;
-          }else if(this.show == 'favorites'){
-              return this.notes.filter(note => note.favorite)
-          }
-      }
-  }
+      ...mapGetters([
+        'filterNotes'
+      ]),
+      ...mapState([ 
+        'activeNote',
+        'show'
+      ])
+  },
 }
 </script>
+<style scoped>
+  .notes-list {
+    flex:1;
+    background-color: #F5F5F5;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+  }
 
+  .list-header {
+    padding: 5px 25px 25px 25px;
+  }
+
+  .list-header .search{
+    margin-top: 20px;
+  }
+
+  .list-header h2 {
+    font-weight: 300;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 22px;
+    padding-bottom: 8px;
+  }
+
+  .container {
+    height: calc(100% - 204px);
+    max-height: calc(100% - 204px);
+    overflow: auto;
+    width: 100%;
+    padding: 0;
+  }
+
+  .container .list-group-item{
+    border: 0;
+    border-radius: 0;
+  }
+
+  .list-group-item-heading{
+    font-weight: 300;
+    font-size: 15px;
+  }
+</style>
