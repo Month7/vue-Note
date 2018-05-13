@@ -2,6 +2,9 @@
 
 > A Vue.js project
 
+vuex2.0 +vue2.0  
+
+使用vuex1.0的版本请参考分支
 ## Build Setup
 
 ``` bash
