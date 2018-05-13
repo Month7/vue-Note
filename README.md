@@ -2,7 +2,7 @@
 
 > A Vue.js project
 
-vuex1.0版本
+vuex2.0版本
 
 ## Build Setup
 
